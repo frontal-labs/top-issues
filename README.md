@@ -20,14 +20,11 @@ This tool is designed to:
 
 ## Installation
 
-This package is part of the Frontal monorepo and uses pnpm for dependency management:
+This package uses Bun as the runtime and package manager:
 
 ```bash
 # Install dependencies
 bun install
-
-# Build the package
-pnpm build
 ```
 
 ## Usage
@@ -36,10 +33,10 @@ pnpm build
 
 ```bash
 # Basic usage
-node scripts/issues.mjs <output-directory>
+bun scripts/issues.mjs <output-directory>
 
 # Example
-node scripts/issues.mjs ./output
+bun scripts/issues.mjs ./output
 ```
 
 ### GitHub Actions Integration
@@ -58,11 +55,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: '18'
-          
+          bun-version: latest
       - name: Install dependencies
         run: bun install
         
@@ -151,17 +147,18 @@ q: `repo:${OWNER}/${REPO} is:issue is:open created:>=${daysAgo} milestone:"v2.0"
 ### Scripts
 
 ```bash
-# Code quality
-pnpm lint          # Run linting
-pnpm format        # Format code
-pnpm style:check   # Check style compliance
+# Run tests
+bun test
+
+# Generate issues report
+bun run generate
 ```
 
-### Testing
+### Manual Testing
 
 ```bash
 # Test with a specific repository
-GH_REPOSITORY=vercel/turbo node scripts/issues.mjs ./test-output
+GH_REPOSITORY=vercel/turbo bun scripts/issues.mjs ./test-output
 
 # Verify output
 cat ./test-output/slack-payload.json
