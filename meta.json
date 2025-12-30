@@ -1,0 +1,19 @@
+{
+	"name": "frontal-top-issues",
+	"displayName": "Frontal Top Issues",
+	"description": "Surfaces the most impactful GitHub issues by analyzing reaction signals to power automated community reporting.",
+	"product": "frontal",
+	"type": "tool",
+	"domain": "developer-productivity",
+	"signals": ["reactions", "engagement", "community-interest"],
+	"capabilities": [
+		"issue-ranking",
+		"signal-extraction",
+		"community-insights",
+		"automated-reporting"
+	],
+	"integrations": ["github"],
+	"audience": ["maintainers", "developer-relations", "community-managers"],
+	"status": "active",
+	"visibility": "public"
+}
