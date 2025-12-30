@@ -1,0 +1,13 @@
+{
+	"prelude": "Top 5 issues sorted by 👍 reactions (last 30 days).\nNote: This GitHub workflow will run every Monday at 1PM UTC (9AM EST).",
+	"issue1URL": "https://github.com/owner/repo/issues/123",
+	"issue1Text": "👍 42: Add support for custom plugins",
+	"issue2URL": "https://github.com/owner/repo/issues/456",
+	"issue2Text": "👍 28: Improve error handling in build process",
+	"issue3URL": "https://github.com/owner/repo/issues/789",
+	"issue3Text": "👍 15: Add dark mode support",
+	"issue4URL": "https://github.com/owner/repo/issues/234",
+	"issue4Text": "👍 12: Documentation improvements needed",
+	"issue5URL": "https://github.com/owner/repo/issues/567",
+	"issue5Text": "👍 8: Performance optimization for large datasets"
+}
