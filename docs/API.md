@@ -22,7 +22,7 @@ The top-issues tool fetches GitHub issues, analyzes their reactions, and generat
 The script accepts one command-line argument:
 
 ```bash
-node scripts/issues.mjs <output-directory>
+bun scripts/issues.mjs <output-directory>
 ```
 
 - `output-directory`: Path where the `slack-payload.json` file will be written

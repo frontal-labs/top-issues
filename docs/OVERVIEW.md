@@ -72,7 +72,7 @@ on:
 Generate reports on-demand for issue triage sessions:
 
 ```bash
-node scripts/issues.mjs ./output
+bun scripts/issues.mjs ./output
 ```
 
 ### 3. Multi-Repository Monitoring
