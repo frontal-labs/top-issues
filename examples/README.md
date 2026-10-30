@@ -56,7 +56,7 @@ export GH_REPOSITORY="owner/repo"
 
 ```bash
 # Generate the report
-node scripts/issues.mjs ./output
+bun src/cli.ts ./output
 
 # Send to Slack
 curl -X POST -H 'Content-type: application/json' \
@@ -74,7 +74,7 @@ See `github-actions-workflow.yml` for a complete example. The workflow:
 
 ### Custom Time Ranges
 
-Edit `scripts/issues.mjs` to change the time range:
+Edit `src/index.ts` to change the time range:
 
 ```javascript
 const NUM_OF_DAYS = 7;  // Last 7 days instead of 30
@@ -104,7 +104,7 @@ Use the example output to verify your setup:
 ```bash
 # Generate a test report
 GH_TOKEN="your-token" GH_REPOSITORY="test/repo" \
-  node scripts/issues.mjs ./test-output
+  bun src/cli.ts ./test-output
 
 # Compare with example
 cat ./test-output/slack-payload.json | jq .

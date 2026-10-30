@@ -13,7 +13,7 @@ echo "Example 1: Generate report for current repository"
 echo "----------------------------------------"
 export GH_TOKEN="${GITHUB_TOKEN:-your-token-here}"
 export GH_REPOSITORY="${GITHUB_REPOSITORY:-owner/repo}"
-node scripts/issues.mjs ./output
+bun src/cli.ts ./output
 echo "Report generated at ./output/slack-payload.json"
 echo ""
 
@@ -21,14 +21,15 @@ echo ""
 echo "Example 2: Generate report for specific repository"
 echo "----------------------------------------"
 export GH_REPOSITORY="vercel/turbo"
-node scripts/issues.mjs ./output-vercel
+bun src/cli.ts ./output-vercel
 echo "Report generated at ./output-vercel/slack-payload.json"
 echo ""
 
 # Example 3: Test with different time ranges
 echo "Example 3: Customize time range (modify NUM_OF_DAYS in script)"
 echo "----------------------------------------"
-echo "To change the time range, edit scripts/issues.mjs:"
+echo "To change the time range, edit src/index.ts:"
+
 echo "  const NUM_OF_DAYS = 7;  // Last 7 days instead of 30"
 echo ""
 

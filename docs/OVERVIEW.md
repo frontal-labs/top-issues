@@ -37,7 +37,7 @@ Practical examples:
 ### Issue Prioritization
 
 Issues are prioritized by:
-- **Reaction count**: 👍 reactions indicate community interest
+- **Reaction count**: +1 reactions indicate community interest
 - **Recency**: Recently created issues are prioritized
 - **Status**: Only open issues are considered
 
@@ -72,7 +72,7 @@ on:
 Generate reports on-demand for issue triage sessions:
 
 ```bash
-bun scripts/issues.mjs ./output
+bun src/cli.ts ./output
 ```
 
 ### 3. Multi-Repository Monitoring
