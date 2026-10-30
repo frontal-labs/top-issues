@@ -1,6 +1,5 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.3.4/schema.json",
-  "extends": ["@frontal/style-guide/core.json"],
   "files": {
     "includes": [
       "src/**",
@@ -16,9 +15,23 @@
     ]
   },
   "formatter": {
-    "enabled": true
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2
   },
   "linter": {
     "enabled": true
-  }
+  },
+  "overrides": [
+    {
+      "includes": ["src/cli.ts"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noConsole": "off"
+          }
+        }
+      }
+    }
+  ]
 }

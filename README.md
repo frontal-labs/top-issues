@@ -1,4 +1,6 @@
-# @frontal/top-issues
+# Frontal Top Issues
+
+![Frontal Banner](./banner.jpg)
 
 An internal tool that automates issue tracking and reporting by fetching top issues from GitHub repositories and generating Slack-compatible payloads for automated notifications.
 
@@ -8,15 +10,17 @@ This tool is designed to:
 - **Surface high-engagement issues** from GitHub repositories
 - **Automate community reporting** through scheduled GitHub Actions
 - **Provide insights** into popular topics and community concerns
-- **Streamline issue prioritization** based on user reactions
+- **Streamline issue prioritization** based on user +1 reactions
+
 
 ## Features
 
 - **Smart Issue Filtering**: Fetches open issues from the last 30 days
-- **Reaction-based Sorting**: Prioritizes issues by 👍 reaction count
+- **Reaction-based Sorting**: Prioritizes issues by +1 reaction count
 - **Slack Integration**: Generates formatted payloads for Slack notifications
 - **Configurable Parameters**: Customizable time range and issue count
 - **GitHub Actions Ready**: Designed for automated workflows
+- **TypeScript API**: Programmatic usage via `src/index.ts`
 
 ## Installation
 
@@ -33,10 +37,29 @@ bun install
 
 ```bash
 # Basic usage
-bun scripts/issues.mjs <output-directory>
+bun src/cli.ts <output-directory>
+
+# Or via npm script
+bun run generate ./output
 
 # Example
-bun scripts/issues.mjs ./output
+bun src/cli.ts ./output
+```
+
+### Programmatic API
+
+```typescript
+import { createTopIssuesClient } from "@frontal-labs/top-issues";
+
+const client = await createTopIssuesClient({
+  token: process.env.GH_TOKEN,
+  repository: "owner/repo",
+  days: 30,
+  limit: 5,
+});
+
+const result = await client.generateReport("./output");
+console.log(result.payload);
 ```
 
 ### GitHub Actions Integration
@@ -54,19 +77,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
       - name: Install dependencies
         run: bun install
-        
       - name: Generate top issues report
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: bun tools/top-issues/scripts/issues.mjs ./output
-        
+          GH_REPOSITORY: ${{ github.repository }}
+        run: bun src/cli.ts ./output
       - name: Post to Slack
         uses: 8398a7/action-slack@v3
         with:
@@ -83,15 +104,18 @@ jobs:
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `GH_TOKEN` | Yes | GitHub personal access token or Actions token |
-| `GH_REPOSITORY` | No | Repository in format `owner/repo` (defaults to current repo) |
+| `GITHUB_TOKEN` | Yes | Alternative name for GitHub token |
+| `GH_REPOSITORY` | No | Repository in format `owner/repo` (defaults to current repo via git remote) |
+| `GITHUB_REPOSITORY` | No | Alternative name for repository |
+| `OUTPUT_DIR` | No | Default output directory |
 
 ### Parameters
 
-The following constants can be modified in `scripts/issues.mjs`:
+The following constants can be modified in `src/index.ts`:
 
 ```javascript
-const NUM_OF_DAYS = 30;    // Time range for issue search
-const NUM_OF_ISSUES = 5;   // Number of top issues to fetch
+const DEFAULT_DAYS = 30;    // Time range for issue search
+const DEFAULT_LIMIT = 5;   // Number of top issues to fetch
 ```
 
 ### Output Format
@@ -100,46 +124,12 @@ The tool generates a `slack-payload.json` file with the following structure:
 
 ```json
 {
-  "prelude": "Top 5 issues sorted by 👍 reactions (last 30 days).\nNote: This GitHub workflow will run every Monday at 1PM UTC (9AM EST).",
+  "prelude": "Top 5 issues sorted by +1 reactions (last 30 days).\nNote: This GitHub workflow will run every Monday at 1PM UTC (9AM EST).",
   "issue1URL": "https://github.com/owner/repo/issues/123",
-  "issue1Text": "👍 42: Add support for custom plugins",
+  "issue1Text": "+1 42: Add support for custom plugins",
   "issue2URL": "https://github.com/owner/repo/issues/456",
-  "issue2Text": "👍 28: Improve error handling in build process"
+  "issue2Text": "+1 28: Improve error handling in build process"
 }
-```
-
-## Customization
-
-### Multi-Repository Support
-
-To analyze multiple repositories, modify the search query:
-
-```javascript
-// In scripts/issues.mjs
-const REPOSITORIES = [
-  'vercel/turbo',
-  'frontal/frontal-core',
-  'frontal/frontal-ui'
-];
-
-// Update the search query
-const query = REPOSITORIES.map(repo => `repo:${repo}`).join(' ') + 
-              ` is:issue is:open created:>=${daysAgo}`;
-```
-
-### Custom Filtering
-
-Add additional filters to the search query:
-
-```javascript
-// Filter by labels
-q: `repo:${OWNER}/${REPO} is:issue is:open created:>=${daysAgo} label:bug`,
-
-// Filter by assignee
-q: `repo:${OWNER}/${REPO} is:issue is:open created:>=${daysAgo} assignee:username`,
-
-// Filter by milestone
-q: `repo:${OWNER}/${REPO} is:issue is:open created:>=${daysAgo} milestone:"v2.0"`,
 ```
 
 ## Development
@@ -150,6 +140,11 @@ q: `repo:${OWNER}/${REPO} is:issue is:open created:>=${daysAgo} milestone:"v2.0"
 # Run tests
 bun test
 
+# Generate report locally
+bun src/cli.ts ./output
+```
+bun test
+
 # Generate issues report
 bun run generate
 ```
@@ -158,7 +153,7 @@ bun run generate
 
 ```bash
 # Test with a specific repository
-GH_REPOSITORY=vercel/turbo bun scripts/issues.mjs ./test-output
+GH_REPOSITORY=vercel/turbo bun src/cli.ts ./test-output
 
 # Verify output
 cat ./test-output/slack-payload.json
@@ -185,7 +180,7 @@ cat ./test-output/slack-payload.json
 Enable verbose logging by adding debug statements:
 
 ```javascript
-// In scripts/issues.mjs
+// In src/index.ts
 console.log('Search query:', `repo:${owner}/${repo} is:issue is:open created:>=${daysAgo}`);
 console.log('Found issues:', issues.map(issue => ({
   title: issue.title,
@@ -199,4 +194,3 @@ console.log('Found issues:', issues.map(issue => ({
 - [Code of Conduct](../../docs/CODE_OF_CONDUCT.md)
 - [Contributing Guidelines](../../docs/CONTRIBUTING.md)
 - [License](../../LICENSE)
-
