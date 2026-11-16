@@ -1,6 +1,6 @@
 {
   "name": "@frontal-labs/top-issues",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "description": "Frontal tool that surfaces top GitHub issues sorted by +1 reactions for automated community reporting",
   "keywords": [
