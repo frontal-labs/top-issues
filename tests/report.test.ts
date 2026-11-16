@@ -4,10 +4,10 @@ import type { GitHubIssue } from "../src/types";
 
 function issue(number: number, thumbsUp: number | undefined): GitHubIssue {
   return {
-    number,
-    title: `Issue ${number}`,
     html_url: `https://github.com/owner/repo/issues/${number}`,
+    number,
     reactions: thumbsUp === undefined ? undefined : { "+1": thumbsUp },
+    title: `Issue ${number}`,
   };
 }
 
@@ -44,10 +44,10 @@ describe("buildSlackPayload", () => {
   test("numbers issue URL and text pairs from 1", () => {
     const payload = buildSlackPayload(
       rankIssues([issue(4, 6), issue(5, 2)], 5),
-      14,
+      14
     );
     expect(payload.prelude).toStartWith(
-      "Top 2 issues sorted by +1 reactions (last 14 days).",
+      "Top 2 issues sorted by +1 reactions (last 14 days)."
     );
     expect(payload.issue1URL).toBe("https://github.com/owner/repo/issues/4");
     expect(payload.issue1Text).toBe("+1 6: Issue 4");

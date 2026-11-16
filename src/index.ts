@@ -26,13 +26,16 @@ const DEFAULT_OUTPUT_DIR = "./output";
 const PAYLOAD_FILE_NAME = "slack-payload.json";
 // The search API caps results at 1000; 100 per page keeps requests to a minimum.
 const SEARCH_PAGE_SIZE = 100;
-const GIT_REMOTE_PATTERN = /[:/]([^/]+)\/([^/\s]+?)(?:\.git)?\s*$/;
+const GIT_REMOTE_PATTERN =
+  /[:/](?<owner>[^/]+)\/(?<repo>[^/\s]+?)(?:\.git)?\s*$/u;
 
 async function getRepositoryFromGit(): Promise<string | undefined> {
   try {
     const remote = await $`git config --get remote.origin.url`.text();
     const match = GIT_REMOTE_PATTERN.exec(remote);
-    return match ? `${match[1]}/${match[2]}` : undefined;
+    return match?.groups
+      ? `${match.groups.owner}/${match.groups.repo}`
+      : undefined;
   } catch {
     return undefined;
   }
@@ -42,7 +45,7 @@ export async function createTopIssuesClient(config: TopIssuesConfig = {}) {
   const token = config.token || env.GH_TOKEN || env.GITHUB_TOKEN;
   if (!token) {
     throw new Error(
-      "GH_TOKEN or GITHUB_TOKEN environment variable is required",
+      "GH_TOKEN or GITHUB_TOKEN environment variable is required"
     );
   }
 
@@ -58,7 +61,7 @@ export async function createTopIssuesClient(config: TopIssuesConfig = {}) {
       : null);
   if (!parsed) {
     throw new Error(
-      "Repository must be in owner/repo format (set GH_REPOSITORY or run inside a git checkout with an origin remote)",
+      "Repository must be in owner/repo format (set GH_REPOSITORY or run inside a git checkout with an origin remote)"
     );
   }
 
@@ -72,27 +75,27 @@ export async function createTopIssuesClient(config: TopIssuesConfig = {}) {
     const items = await octokit.paginate(
       octokit.rest.search.issuesAndPullRequests,
       {
-        q: query,
-        sort: "created",
         order: "desc",
         per_page: SEARCH_PAGE_SIZE,
-      },
+        q: query,
+        sort: "created",
+      }
     );
     return z.array(GitHubIssueSchema).parse(items);
   }
 
   async function generateReport(
-    outputDir = DEFAULT_OUTPUT_DIR,
+    outputDir = DEFAULT_OUTPUT_DIR
   ): Promise<TopIssuesResult> {
     const issues = rankIssues(await fetchIssues(), limit);
     const payload = buildSlackPayload(issues, days);
     await mkdir(outputDir, { recursive: true });
     await writeFile(
       join(outputDir, PAYLOAD_FILE_NAME),
-      JSON.stringify(payload, null, 2),
+      JSON.stringify(payload, null, 2)
     );
     return { issues, payload };
   }
 
-  return { owner, repo, days, limit, generateReport };
+  return { days, generateReport, limit, owner, repo };
 }

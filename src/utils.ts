@@ -6,7 +6,7 @@ export function getDaysAgoDate(days: number, now: Date = new Date()): string {
 }
 
 export function parseRepository(
-  repo?: string,
+  repo?: string
 ): { owner: string; repo: string } | null {
   const [owner, name, ...rest] = repo?.split("/") ?? [];
   if (!(owner && name) || rest.length > 0) {

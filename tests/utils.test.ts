@@ -25,6 +25,6 @@ describe("parseRepository", () => {
     "rejects %p",
     (input) => {
       expect(parseRepository(input)).toBeNull();
-    },
+    }
   );
 });

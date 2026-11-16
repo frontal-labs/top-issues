@@ -52,4 +52,3 @@ jobs:
           payload_file_path: ./output/slack-payload.json
           webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
         if: always()
-

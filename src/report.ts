@@ -3,14 +3,14 @@ import type { GitHubIssue, IssueWithReactions, SlackPayload } from "./types";
 /** Counts +1 reactions, sorts by them descending and keeps the top `limit`. */
 export function rankIssues(
   issues: GitHubIssue[],
-  limit: number,
+  limit: number
 ): IssueWithReactions[] {
   return issues
     .map(({ number, title, html_url, reactions }) => ({
-      number,
-      title,
       html_url,
+      number,
       thumbsUpCount: reactions?.["+1"] ?? 0,
+      title,
     }))
     .sort((a, b) => b.thumbsUpCount - a.thumbsUpCount)
     .slice(0, limit);
@@ -18,7 +18,7 @@ export function rankIssues(
 
 export function buildSlackPayload(
   issues: IssueWithReactions[],
-  days: number,
+  days: number
 ): SlackPayload {
   if (issues.length === 0) {
     return { prelude: `No issues found in the last ${days} days.` };

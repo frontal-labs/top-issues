@@ -12,7 +12,7 @@ async function main() {
     console.log(`Fetching issues for ${client.owner}/${client.repo}...`);
     const { issues } = await client.generateReport(outputDir);
     console.log(
-      `OK Report generated successfully at ${join(outputDir, "slack-payload.json")}`,
+      `OK Report generated successfully at ${join(outputDir, "slack-payload.json")}`
     );
     if (issues.length === 0) {
       console.log("No issues found in the specified time range.");
@@ -22,7 +22,7 @@ async function main() {
     console.log(`  • Top ${issues.length} issues by +1 reactions:`);
     issues.forEach((issue, index) => {
       console.log(
-        `    ${index + 1}. +1 ${issue.thumbsUpCount}: ${issue.title}`,
+        `    ${index + 1}. +1 ${issue.thumbsUpCount}: ${issue.title}`
       );
     });
   } catch (error) {

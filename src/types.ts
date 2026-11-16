@@ -2,10 +2,10 @@ import { z } from "zod";
 
 // The subset of a GitHub issue search result this tool reads.
 export const GitHubIssueSchema = z.object({
-  number: z.number(),
-  title: z.string(),
   html_url: z.string(),
+  number: z.number(),
   reactions: z.object({ "+1": z.number() }).optional(),
+  title: z.string(),
 });
 
 export type GitHubIssue = z.infer<typeof GitHubIssueSchema>;
@@ -20,12 +20,12 @@ export type IssueWithReactions = Pick<
 export type SlackPayload = { prelude: string } & Record<string, string>;
 
 export interface TopIssuesConfig {
-  token?: string;
-  repository?: string;
-  owner?: string;
-  repo?: string;
   days?: number;
   limit?: number;
+  owner?: string;
+  repo?: string;
+  repository?: string;
+  token?: string;
 }
 
 export interface TopIssuesResult {
